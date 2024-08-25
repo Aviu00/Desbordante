@@ -135,6 +135,10 @@ std::unordered_map<std::type_index, ConvFunc> const kConverters{
 
 namespace python_bindings {
 
+config::InputTable PyToInputTable(py::handle obj) {
+    return PythonObjToInputTable("table", obj);
+}
+
 boost::any PyToAny(std::string_view option_name, std::type_index index, py::handle obj) {
     return kConverters.at(index)(option_name, obj);
 }

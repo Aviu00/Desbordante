@@ -28,6 +28,8 @@ public:
 
     [[nodiscard]] std::vector<int> GetTuple(int tuple_index) const;
 
+    [[nodiscard]] std::shared_ptr<model::PLI const> CalculatePLI(std::vector<unsigned int> const& indices) const;
+
     static std::unique_ptr<ColumnLayoutRelationData> CreateFrom(model::IDatasetStream& data_stream,
                                                                 bool is_null_eq_null);
 };

@@ -19,6 +19,16 @@ std::vector<int> ColumnLayoutRelationData::GetTuple(int tuple_index) const {
     return tuple;
 }
 
+std::shared_ptr<model::PLI const> ColumnLayoutRelationData::CalculatePLI(std::vector<unsigned int> const& indices) const {
+    assert(indices.size() > 0);
+    std::shared_ptr<model::PLI const> pli = GetColumnData(indices[0]).GetPliOwnership();
+
+    for (size_t i = 1; i < indices.size(); ++i) {
+        pli = pli->Intersect(GetColumnData(indices[i]).GetPositionListIndex());
+    }
+    return pli;
+}
+
 std::unique_ptr<ColumnLayoutRelationData> ColumnLayoutRelationData::CreateFrom(
         model::IDatasetStream& data_stream, bool is_null_eq_null) {
     auto schema = std::make_unique<RelationalSchema>(data_stream.GetRelationName());

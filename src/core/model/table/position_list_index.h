@@ -22,6 +22,7 @@ public:
 
 private:
     std::deque<Cluster> index_;
+    std::deque<Cluster> singletons_;
     Cluster null_cluster_;
     unsigned int size_;
     double entropy_;
@@ -46,8 +47,9 @@ public:
     static unsigned long long micros_;
     static int const kSingletonValueId;
 
-    PositionListIndex(std::deque<Cluster> index, Cluster null_cluster, unsigned int size,
-                      double entropy, unsigned long long nep, unsigned int relation_size,
+    PositionListIndex(std::deque<Cluster> index, std::deque<Cluster> singletons,
+                      Cluster null_cluster, unsigned int size, double entropy,
+                      unsigned long long nep, unsigned int relation_size,
                       unsigned int original_relation_size, double inverted_entropy = 0,
                       double gini_impurity = 0);
     static std::unique_ptr<PositionListIndex> CreateFor(std::vector<int>& data,
@@ -83,6 +85,13 @@ public:
     /* If you use this method and change index in any way, all other methods will become invalid */
     std::deque<Cluster>& GetIndex() noexcept {
         return index_;
+    }
+
+    /* Returns all clusters, including singletons */
+    std::deque<Cluster> GetAllClusters() const {
+        auto all_clusters = index_;
+        all_clusters.insert(all_clusters.end(), singletons_.begin(), singletons_.end());
+        return all_clusters;
     }
 
     double GetNep() const {

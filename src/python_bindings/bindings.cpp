@@ -4,6 +4,7 @@
 #include <pybind11/pybind11.h>
 
 #include "ac/bind_ac.h"
+#include "afd_metric/bind_afd_metric_calculator.h"
 #include "ar/bind_ar.h"
 #include "bind_main_classes.h"
 #include "cfd/bind_cfd.h"
@@ -38,7 +39,7 @@ PYBIND11_MODULE(desbordante, module) {
     for (auto bind_func :
          {BindMainClasses, BindDataTypes, BindFd, BindCfd, BindAr, BindUcc, BindAc, BindOd,
           BindFdVerification, BindMfdVerification, BindUccVerification, BindStatistics, BindInd,
-          BindGfdVerification, BindSplit, BindDynamicFdVerification}) {
+          BindGfdVerification, BindSplit, BindDynamicFdVerification, BindAfdMetricCalculation}) {
         bind_func(module);
     }
 }
