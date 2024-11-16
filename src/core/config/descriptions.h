@@ -6,6 +6,7 @@
 #include "algorithms/cfd/enums.h"
 #include "algorithms/fd/pfdtane/enums.h"
 #include "algorithms/metric/enums.h"
+#include "fd/afd_metric/afd_metric.h"
 #include "util/enum_to_available_values.h"
 
 namespace config::descriptions {
@@ -13,6 +14,9 @@ namespace config::descriptions {
 namespace details {
 std::string const kDMetricString =
         "metric to use\n" + util::EnumToAvailableValues<algos::metric::Metric>();
+std::string const kDAFDMetricString =
+        "AFD metric to calculate\n" +
+        util::EnumToAvailableValues<algos::afd_metric_calculator::AFDMetric>();
 std::string const kDMetricAlgorithmString =
         "MFD algorithm to use\n" + util::EnumToAvailableValues<algos::metric::MetricAlgo>();
 std::string const kDCfdSubstrategyString = "CFD lattice traversal strategy to use\n" +
@@ -43,6 +47,7 @@ constexpr auto kDTIdColumnIndex = "index of the column where a TID is stored";
 constexpr auto kDItemColumnIndex = "index of the column where an item name is stored";
 constexpr auto kDFirstColumnTId = "indicates that the first column contains the transaction IDs";
 auto const kDMetric = details::kDMetricString.c_str();
+auto const kDAFDMetric = details::kDAFDMetricString.c_str();
 constexpr auto kDLhsIndices = "LHS column indices";
 constexpr auto kDRhsIndices = "RHS column indices";
 constexpr auto kDRhsIndex = "RHS column index";

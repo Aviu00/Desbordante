@@ -9,6 +9,7 @@
 
 #include "algorithms/algebraic_constraints/bin_operation_enum.h"
 #include "algorithms/cfd/enums.h"
+#include "algorithms/fd/afd_metric/afd_metric.h"
 #include "algorithms/metric/enums.h"
 #include "association_rules/ar_algorithm_enums.h"
 #include "config/error_measure/type.h"
@@ -120,6 +121,7 @@ std::unordered_map<std::type_index, ConvFunc> const kConverters{
         kNormalConvPair<size_t>,
         kEnumConvPair<algos::metric::Metric>,
         kEnumConvPair<algos::metric::MetricAlgo>,
+        kEnumConvPair<algos::afd_metric_calculator::AFDMetric>,
         kEnumConvPair<config::ErrorMeasureType>,
         kEnumConvPair<algos::InputFormat>,
         kEnumConvPair<algos::cfd::Substrategy>,
@@ -134,10 +136,6 @@ std::unordered_map<std::type_index, ConvFunc> const kConverters{
 }  // namespace
 
 namespace python_bindings {
-
-config::InputTable PyToInputTable(py::handle obj) {
-    return PythonObjToInputTable("table", obj);
-}
 
 boost::any PyToAny(std::string_view option_name, std::type_index index, py::handle obj) {
     return kConverters.at(index)(option_name, obj);

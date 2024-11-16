@@ -89,7 +89,7 @@ public:
 
     /* Returns all clusters, including singletons */
     std::deque<Cluster> GetAllClusters() const {
-        auto all_clusters = index_;
+        auto all_clusters(index_);
         all_clusters.insert(all_clusters.end(), singletons_.begin(), singletons_.end());
         return all_clusters;
     }

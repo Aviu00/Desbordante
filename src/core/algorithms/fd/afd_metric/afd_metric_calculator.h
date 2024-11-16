@@ -1,39 +1,66 @@
 #pragma once
 
+#include <cstddef>
 #include <memory>
 
-#include "indices/type.h"
-#include "table/column_layout_relation_data.h"
-#include "tabular_data/input_table_type.h"
+#include "algorithms/fd/afd_metric/afd_metric.h"
+#include "algorithms/algorithm.h"
+#include "config/equal_nulls/type.h"
+#include "config/indices/type.h"
+#include "config/tabular_data/input_table_type.h"
+#include "model/table/column_layout_relation_data.h"
+#include "model/table/position_list_index.h"
 
 namespace algos::afd_metric_calculator {
 
-class AFDMetricCalculator {
+class AFDMetricCalculator : public Algorithm {
 private:
+    config::InputTable input_table_;
+
+    AFDMetric metric_ = AFDMetric::_values()[0];
+    config::IndicesType lhs_indices_;
+    config::IndicesType rhs_indices_;
+    config::EqNullsType is_null_equal_null_;
+
     std::shared_ptr<ColumnLayoutRelationData> relation_;
 
-    std::pair<long double, long double> CalculateP1P2(
+    long double result_ = 0.L;
+
+    static std::pair<long double, long double> CalculateP1P2(
             size_t num_rows, std::deque<model::PositionListIndex::Cluster>&& lhs_clusters,
-            std::deque<model::PositionListIndex::Cluster>&& rhs_clusters) const;
+            std::deque<model::PositionListIndex::Cluster>&& rhs_clusters);
+
+    void CalculateMetric();
+
+    void RegisterOptions();
+
+    void ResetState() final {
+        result_ = 0.L;
+    }
+
+protected:
+    void LoadDataInternal() override;
+    void MakeExecuteOptsAvailable() override;
+    unsigned long long ExecuteInternal() override;
 
 public:
-    long double CalculateG2(config::IndicesType const& lhs_indices,
-                            config::IndicesType const& rhs_indices) const;
+    static long double CalculateG2(model::PLI const* lhs_pli, model::PLI const* rhs_pli,
+                                   size_t num_rows);
 
-    long double CalculateTau(config::IndicesType const& lhs_indices,
-                             config::IndicesType const& rhs_indices) const;
+    static long double CalculateTau(model::PLI const* lhs_pli, model::PLI const* rhs_pli,
+                                    size_t num_rows);
 
-    long double CalculateMuPlus(config::IndicesType const& lhs_indices,
-                                config::IndicesType const& rhs_indices) const;
+    static long double CalculateMuPlus(model::PLI const* lhs_pli, model::PLI const* rhs_pli,
+                                       size_t num_rows);
 
-    long double CalculateFI(config::IndicesType const& lhs_indices,
-                            config::IndicesType const& rhs_indices) const;
+    static long double CalculateFI(model::PLI const* lhs_pli, model::PLI const* rhs_pli,
+                                   size_t num_rows);
 
-    AFDMetricCalculator(std::shared_ptr<ColumnLayoutRelationData> relation)
-        : relation_(std::move(relation)) {};
+    long double GetResult() const {
+        return result_;
+    }
 
-    AFDMetricCalculator(config::InputTable input_table, bool is_null_eq_null = true)
-        : relation_(ColumnLayoutRelationData::CreateFrom(*input_table, is_null_eq_null)) {};
+    AFDMetricCalculator();
 };
 
 }  // namespace algos::afd_metric_calculator
